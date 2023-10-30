@@ -29,7 +29,7 @@ class AuthController extends Controller
     public function processRegister(Request $request){
 
 
-        $validator = $request->validate([
+        $request->validate([
             'name' => 'required|min:3',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed'
@@ -42,9 +42,9 @@ class AuthController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
-        // $user->sendEmailVerificationNotification();
+        $user->sendEmailVerificationNotification();
 
-        return redirect()->route('account.login')->with('success','You have been registered successfully');
+        return redirect()->route('account.login')->with('success','You have been registered successfully. We have sent you a verification email.');
     }
 
     public function authenticate(Request $request){
@@ -55,14 +55,14 @@ class AuthController extends Controller
         ]);
 
         if($validator->passes()){
-            
+
             if(Auth::attempt(['email' => $request->email, 'password' => $request->password],$request->get('remember'))){
 
-                // if(session()->has('url.intended')){
+                if(session()->has('url.intended')){
 
-                //     return redirect(session()->get('url.intended'));
-                    
-                // }
+                    return redirect(session()->get('url.intended'));
+
+                }
 
                 return redirect()->route('account.profile');
 
@@ -96,13 +96,13 @@ class AuthController extends Controller
         $user->phone = $request->phone;
 
         if($user->email == $request->email){
-            
+
         }else{
             $user->email = $request->email;
             $user->email_verified_at = null;
         }
         // dd($user->email);
-        
+
 
         $user->save();
 
@@ -129,7 +129,7 @@ class AuthController extends Controller
 
         $orderItems = OrderItem::where('order_id',$id)->get();
         $data['orderItems'] = $orderItems;
-        
+
 
         return view('front.account.order-detail',$data);
     }
@@ -142,7 +142,7 @@ class AuthController extends Controller
 
 
         $request->validate([
-            
+
             'old_password' => 'required',
             'new_password' => 'required|min:6',
             'confirm_password' => 'required|same:new_password'
@@ -171,7 +171,14 @@ class AuthController extends Controller
     public function logout(){
         Auth::logout();
         Cart::destroy();
+        if(session()->has('url.intended')){
+
+            session()->forget('url.intended');
+            // return redirect(session()->get('url.intended'));
+
+        }
         return redirect()->route('account.login')->with('success','You have been successfully logged out');
+        // return redirect()->route('account.profile')->with('success','You have been successfully logged out');
     }
 
     public function forgotPassword(){
@@ -179,15 +186,15 @@ class AuthController extends Controller
     }
 
     public function processForgotPassword(Request $request){
-        
+
         $request->validate([
             'email' => 'required|email|exists:users,email'
         ]);
-        
+
         $token = Str::random(60);
 
         DB::table('password_reset_tokens')->where('email',$request->email)->delete();
-        
+
         DB::table('password_reset_tokens')->insert([
             'email' => $request->email,
             'token' => $token,
@@ -205,7 +212,7 @@ class AuthController extends Controller
         ];
 
         Mail::to($request->email)->send(new ForgotPassword($formData));
-        
+
         return redirect()->route('account.forgotPassword')->with('success','You have been sent an email');
 
     }
