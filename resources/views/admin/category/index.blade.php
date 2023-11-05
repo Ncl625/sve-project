@@ -1,10 +1,10 @@
 @extends('admin.layouts.parent')
 @section('content')
-    
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    <section class="content-header">					
+    <section class="content-header">
         <div class="container-fluid my-2">
             <div class="row mb-2">
                 <div class="col-sm-6">
@@ -31,7 +31,7 @@
                         <div class="card-tools">
                             <div class="input-group input-group" style="width: 250px;">
                                 <input type="text" value="{{ Request::get('keyword') }}" name="keyword" class="form-control float-right" placeholder="Search">
-            
+
                                 <div class="input-group-append">
                                 <button type="submit" class="btn btn-default">
                                     <i class="fas fa-search"></i>
@@ -41,7 +41,7 @@
                         </div>
                     </div>
                 </form>
-                <div class="card-body table-responsive p-0">								
+                <div class="card-body table-responsive p-0">
                     <table class="table table-hover text-nowrap">
                         <thead>
                             <tr>
@@ -55,10 +55,10 @@
                         </thead>
                         <tbody>
                         @if ($categories->isNotEmpty())
-                           
+
                         @foreach ($categories as $category)
-                                
-                            
+
+
                             <tr>
                                 <td>{{ $loop->index+1 }}</td>
                                 <td>{{ $category->name }}</td>
@@ -100,9 +100,9 @@
                                 <td colspan="16"><strong>No Record Found</strong></td>
                             </tr>
                         @endif
-                            
+
                         </tbody>
-                    </table>			
+                    </table>
                     <div class="container">
                         <div class="row justify-content-center">
                           <div class="col-sm-16">
@@ -111,9 +111,9 @@
                             </div>
                           </div>
                         </div>
-                    </div>							
+                    </div>
                 </div>
-                
+
             </div>
         </div>
         <!-- /.card -->

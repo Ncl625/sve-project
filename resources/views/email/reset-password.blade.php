@@ -7,14 +7,14 @@
     <title>Reset Password Email</title>
 </head>
 <body style="font-family: Arial, Helvetica, sans-serif; font-size:16px;">
-    
+
     <h2>Hello, {{$formData['user']->name}}</h2>
 
     <h1>You have requested to reset your password:</h1>
 
     <p>Please click on the link below to reset your password</p>
 
-    <a href="{{route('account.resetPassword',$formData['token'])}}">Click Here{{$formData['token']}}</a>
+    <a href="{{route('account.resetPassword',$formData['token'])}}">Click Here {{$formData['token']}}</a>
 
 </body>
 </html>
